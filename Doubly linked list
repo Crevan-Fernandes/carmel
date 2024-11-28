@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node *next;
+    struct node *prev;
+};
+
+struct node* create(int data) {
+    struct node* newnode = (struct node*) malloc(sizeof(struct node));
+    newnode->data = data;
+    newnode->next = NULL;
+    newnode->prev = NULL;
+    return newnode;
+}
+
+void insert_at_beginning(struct node** head, int data) {
+    struct node* newnode = create(data);
+    newnode->next = *head;
+    if (*head != NULL) {
+        (*head)->prev = newnode;
+    }
+    *head = newnode;
+}
+
+void delete_from_val(struct node **head, int data) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct node *ptr = *head;
+
+
+    while (ptr != NULL && ptr->data != data) {
+        ptr = ptr->next;
+    }
+
+
+    if (ptr == NULL) {
+        printf("Element %d does not exist in list\n", data);
+        return;
+    }
+
+
+    if (ptr->prev == NULL) {
+        *head = ptr->next;
+        if (*head != NULL) {
+            (*head)->prev = NULL;
+        }
+    } else {
+
+        if (ptr->next != NULL) {
+            ptr->next->prev = ptr->prev;
+        }
+        ptr->prev->next = ptr->next;
+    }
+
+
+    free(ptr);
+}
+
+void display(struct node** head) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct node* temp = *head;
+    while (temp != NULL) {
+        printf("%d ->", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct node* head = NULL;
+    int x, y;
+
+    while (1) {
+        printf("Enter choice: \n");
+        printf("1. Insert in list \n");
+        printf("2. Delete from list \n");
+        printf("3. Display \n");
+        printf("4. Exit\n");
+        scanf("%d", &x);
+
+        switch (x) {
+            case 1:
+                printf("Enter the value to be inserted: ");
+                scanf("%d", &y);
+                insert_at_beginning(&head, y);
+                break;
+
+            case 2:
+                printf("Enter value to be deleted: ");
+                scanf("%d", &y);
+                delete_from_val(&head, y);
+                break;
+
+            case 3:
+                display(&head);
+                break;
+
+            case 4:
+                return 0;
+
+            default:
+                printf("Invalid entry\n");
+                break;
+        }
+    }
+
+    return 0;
+}
